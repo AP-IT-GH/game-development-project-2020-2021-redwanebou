@@ -22,6 +22,7 @@ namespace game.Input
         }
         public Vector2 LeesInput()
         {
+            // begin positie //
             var richting = Vector2.Zero;
 
             // toetsen uitlezen van toetsenbord //

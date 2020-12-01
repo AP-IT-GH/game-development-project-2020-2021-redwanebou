@@ -5,43 +5,44 @@ using System.Text;
 
 namespace game.Animation
 {
-    class Animatie
+    public class Animatie
     {
-        public Animationframe Huidigeframe { get; set; }
-        private List<Animationframe> frame;
+        public AnimationFrame CurrentFrame { get; set; }
+
+        private List<AnimationFrame> frames;
 
         private int counter;
 
         private double frameMovement = 0;
+       
 
         public Animatie()
         {
-            frame = new List<Animationframe>();
-
+            frames = new List<AnimationFrame>();
         }
 
-        public void AddFrame(Animationframe animationFrame)
+        public void AddFrame(AnimationFrame animationFrame)
         {
-            frame.Add(animationFrame);
-            Huidigeframe = frame[0];
+            frames.Add(animationFrame);
+            CurrentFrame = frames[0];
         }
+
         public void Update(GameTime gameTime)
         {
-            Huidigeframe = frame[counter];
-            // omzetten naar frame per seconde //
-            frameMovement += Huidigeframe.sourceregtangle.Width * gameTime.ElapsedGameTime.TotalSeconds;
 
-            // hoe snel moet die lopen ? //
-            if (frameMovement >=Huidigeframe.sourceregtangle.Width/10)
+            CurrentFrame = frames[counter];
+
+            frameMovement += CurrentFrame.SourceRectangle.Width * gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (frameMovement >= CurrentFrame.SourceRectangle.Width/8)
             {
                 counter++;
                 frameMovement = 0;
             }
 
-            if (counter >= frame.Count)
-            {
+            if (counter >= frames.Count)
                 counter = 0;
-            }
         }
+        
     }
 }

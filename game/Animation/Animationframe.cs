@@ -1,18 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Text;
 
 namespace game.Animation
 {
-    class Animationframe
+    public class AnimationFrame
     {
-        public Rectangle sourceregtangle { get; set; }
 
+        public Rectangle SourceRectangle { get; set; }
 
-        public Animationframe(Rectangle rectangle){
-            sourceregtangle = rectangle;
+        public AnimationFrame(Rectangle rectangle)
+        {
+            SourceRectangle = rectangle;
         }
-    
     }
 }

@@ -8,19 +8,21 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using game.Animation.HeroAnimations;
 
 namespace game
 {
-    public class Hero : ITransform
+    public class Hero : ITransform, ICollision
     {
-        Texture2D herotexture;
-        Animatie animatie;
+        private Texture2D herotexture;
 
-        private Vector2 snelheid;
-        private Vector2 versnelling;
+        private Animatie animatie;
         // een lijn instellen //
         public Vector2 positie { get; set; }
-        private  IInputReader inputReader;
+        public Rectangle CollisionRectangle { get; set; }
+        private Rectangle _collisionRectangle;
+
+        private IInputReader inputReader;
         private IInputReader mouseReader;
 
 
@@ -28,24 +30,26 @@ namespace game
 
         private IGameCommand moveToCommand;
 
+        IEntityAnimation walkRight, walkLeft, currentAnimation;
+
+
         // default constructor //
         public Hero(Texture2D texture, IInputReader reader)
         {
             herotexture = texture;
-            animatie = new Animatie();
+            walkRight = new WalkRightAnimation(texture, this);
+            walkLeft = new WalkLeftAnimation(texture, this);
+            currentAnimation = walkRight;
+           // animatie = new Animatie();
             // je begint altijd bij 0 //
-            animatie.AddFrame(new Animationframe(new Rectangle(0, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(128, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(192, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(256, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(320, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(384, 0, 64, 96)));
-            animatie.AddFrame(new Animationframe(new Rectangle(448, 0, 64, 96)));
+           // animatie.AddFrame(new Animationframe(new Rectangle(0, 0, 64, 96)));
+           // animatie.AddFrame(new Animationframe(new Rectangle(128, 0, 64, 96)));
+          //  animatie.AddFrame(new Animationframe(new Rectangle(192, 0, 64, 96)));
+           // animatie.AddFrame(new Animationframe(new Rectangle(256, 0, 64, 96)));
+          //  animatie.AddFrame(new Animationframe(new Rectangle(320, 0, 64, 96)));
+          //  animatie.AddFrame(new Animationframe(new Rectangle(384, 0, 64, 96)));
+           // animatie.AddFrame(new Animationframe(new Rectangle(448, 0, 64, 96)));
           //  positie = new Vector2(10, 10);
-            // v //
-            snelheid = new Vector2(1, 1);
-            // versnelling //
-            versnelling = new Vector2(0.1f, 0.1f);
 
             // Read input for my hero class
             this.inputReader = reader;
@@ -54,7 +58,10 @@ namespace game
 
             moveCommand = new MoveCommand();
             moveToCommand = new MoveToCommand();
-         }
+
+            _collisionRectangle = new Rectangle((int)positie.X, (int)positie.Y, 280, 385);
+
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -68,11 +75,21 @@ namespace game
 
 
             // wanneer ik op letter M druk volg ik de muis //
-            animatie.Update(gameTime);
+            // animatie.Update(gameTime);
+
+            currentAnimation.Update(gameTime);
+
+            _collisionRectangle.X = (int)positie.X;
+            CollisionRectangle = _collisionRectangle;
         }
 
         private void MoveHorizontal(Vector2 richting)
         {
+            if (richting.X == -1)
+                currentAnimation = walkLeft;
+            else if (richting.X == 1)
+                currentAnimation = walkRight;
+
             moveCommand.Execute(this, richting);
         }
 
@@ -81,26 +98,15 @@ namespace game
 
             moveToCommand.Execute(this, mouse);
          
-            // een limiet instellen op x en y //
-            // een vector bestaat uit X en Y //
-           // if (positie.X > 600 || positie.X < 0)
-          //  {
-                // hij draait op deze manier terug //
-          //      snelheid.X *= -1;
-           //  versnelling.X *= -1;
-           // }
-           // if (positie.Y > 400 || positie.Y < 0)
-           // {
-           //     snelheid.Y *= -1;
-           //     versnelling *= -1;
-           // }
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            currentAnimation.Draw(spriteBatch);
+
             // aanroepen && positie update steeds //
-            spriteBatch.Draw(herotexture, positie, animatie.Huidigeframe.sourceregtangle, Color.White);
+            // spriteBatch.Draw(herotexture, positie, animatie.Huidigeframe.sourceregtangle, Color.White);
         }
     }
 }
