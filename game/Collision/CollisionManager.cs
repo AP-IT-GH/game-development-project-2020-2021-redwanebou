@@ -7,7 +7,6 @@ namespace game.Collision
 {
     public class CollisionManager
     {
-
         public bool CheckCollision(Rectangle rect1, Rectangle rect2)
         {
             if (rect1.Intersects(rect2))

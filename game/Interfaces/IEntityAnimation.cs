@@ -10,7 +10,7 @@ namespace game.Animation
     {
          Animatie Animatie { get; set; }
 
-         void Draw(SpriteBatch spriteBatch);
+         void Draw(SpriteBatch spriteBatch, SpriteEffects sprite);
         void Update(GameTime gameTime);
         
         
