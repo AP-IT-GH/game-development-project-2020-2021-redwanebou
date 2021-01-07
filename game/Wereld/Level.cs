@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace LevelDesign.LevelDesign
 {
-    public class Level: ICollision
+    public class Level
     {
 
         public Texture2D texture;
@@ -21,16 +21,16 @@ namespace LevelDesign.LevelDesign
             {0,0,0,0,0,0 },
             {0,0,0,0,0,0 },
             {0,0,0,0,0,0 },
-            {0,0,0,0,0,0 },
-            {0,1,0,0,0,1 },
+            {0,0,0,0,0,1 },
+            {0,0,0,1,0,0 },
+            {0,0,1,0,0,0 },
         };
 
-        private Blok[,] blokArray = new Blok[5, 6];
+        private Blok[,] blokArray = new Blok[6, 6];
 
         private ContentManager content;
 
-        public Rectangle CollisionRectangle { get; set; }
-
+        public List<Rectangle> colli = new List<Rectangle>();
 
 
         public Level(ContentManager content)
@@ -48,14 +48,15 @@ namespace LevelDesign.LevelDesign
 
         public void CreateWorld()
         {
-            for (int x = 0; x < 5; x++)
+            for (int x = 0; x < 6; x++)
             {
                 for (int y = 0; y < 6; y++)
                 {
                     if (tileArray[x, y] == 1)
                     {
                         blokArray[x, y] = new Blok(texture, new Vector2(y * 128, x * 64));
-                        CollisionRectangle = new Rectangle(y * 128, x *64, 128, 64);
+
+                        colli.Add(new Rectangle(y * 128, x * 64, 120, 64));
                     }
                 }
             }
@@ -63,7 +64,7 @@ namespace LevelDesign.LevelDesign
 
         public void DrawWorld(SpriteBatch spritebatch)
         {
-            for (int x = 0; x < 5; x++)
+            for (int x = 0; x < 6; x++)
             {
                 for (int y = 0; y < 6; y++)
                 {

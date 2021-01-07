@@ -17,7 +17,7 @@ namespace game.Input
             KeyboardState state = Keyboard.GetState();
 
 
-            // IsKeyDown = is er een toets ingedrukt ? Zo ja check of het Links is 
+            // IsKeyDown = is er een toets ingedrukt ? Zo ja check the state
             if (state.IsKeyDown(Keys.Left))
             {
                 richting = new Vector2(-1, 0);

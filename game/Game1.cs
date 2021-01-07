@@ -7,22 +7,41 @@ using game.world;
 using game.Collision;
 using System.Diagnostics;
 using LevelDesign.LevelDesign;
+using game.Interfaces;
+using game.Backgrounds;
+using game.Screen;
+using game.Commands;
+using Microsoft.Xna.Framework.Audio;
 
 namespace game
 {
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
+        // sound effects //
+        SoundEffect spring;
 
-
+        Camera camera;
         private SpriteBatch _spriteBatch;
         // texture is de afbeelding zelf //
-        private Texture2D texture, bgTexture;
+        private Texture2D texture;
         Speler hero;
         Level level;
-        CollisionManager collisionManager;
+        Toetsenbord toets;
+        //  Map map;
+        Background bg1;
+        Background bg2;
 
 
+        // alles over scherm //
+        private State cstate;
+        private State nstate;
+
+
+        public void state(State s)
+        {
+            nstate = s;
+        }
 
         public Game1()
         {
@@ -33,7 +52,6 @@ namespace game
 
         protected override void Initialize()
         {
-
             level = new Level(Content);
             level.CreateWorld();
             base.Initialize();
@@ -42,47 +60,49 @@ namespace game
 
         protected override void LoadContent()
         {
+            cstate = new MenuState(this, GraphicsDevice, Content);
+            toets = new Toetsenbord();
+            bg1 = new Background(Content.Load<Texture2D>("bg"), new Rectangle(0,0,1014,600));
+            bg2 = new Background(Content.Load<Texture2D>("bgg"), new Rectangle(1014, 0, 1014, 600));
+            spring = Content.Load<SoundEffect>("Geluid/spring");
+            camera = new Camera(GraphicsDevice.Viewport);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // laad image in //
             texture = Content.Load<Texture2D>("spritesheet");
-            // laad background in //
-            bgTexture = Content.Load<Texture2D>("bg");
+            hero = new Speler(texture, new Toetsenbord(), level.colli);
 
-
-            InitializeGameObjects();
-
-        }
-
-        // zet de objecten klaar //
-        private void InitializeGameObjects()
-        {
-           hero = new Speler(texture, new Toetsenbord());
-          collisionManager = new CollisionManager();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
+            if (nstate != null)
+            {
+                cstate = nstate;
 
-            hero.Update(gameTime);
+              // terug resetten //
+                nstate = null;
+            }
+
+            cstate.Update(gameTime);
+
+            hero.Update(gameTime,spring);
+
+            if (toets.LeesInput().X == 1)
+            {
+                bg1.Update();
+                bg2.Update();
+            }
+
+            camera.Update(hero.positie, 50000, 600);
 
             base.Update(gameTime);
-
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(bgTexture, new Vector2(0, 0), Color.White);
-            hero.Draw(_spriteBatch);
-            level.DrawWorld(_spriteBatch);
-            _spriteBatch.End();
+            cstate.Draw(gameTime, _spriteBatch,bg1,bg2,camera, hero,level);
 
             base.Draw(gameTime);
         }

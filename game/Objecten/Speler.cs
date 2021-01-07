@@ -2,6 +2,7 @@
 using game.Commands;
 using game.Input;
 using game.Interfaces;
+using game.Collision;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,9 @@ using System.Collections.Generic;
 using System.Text;
 using game.Animation.HeroAnimations;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Content;
+using LevelDesign.LevelDesign;
+using Microsoft.Xna.Framework.Audio;
 
 namespace game
 {
@@ -23,38 +27,47 @@ namespace game
         public Rectangle CollisionRectangle { get; set; }
         private Rectangle _collisionRectangle;
 
+        Collisionn colli;
+
         private IInputReader inputReader;
- 
-        private IGameCommand moveCommand;
+
+        private IGameCommand Movecommand;
 
         public SpriteEffects sprite;
 
         IEntityAnimation walk;
 
 
-        // default constructor //
-        public Speler(Texture2D texture, IInputReader reader)
+        public Speler(Texture2D texture, IInputReader reader, List<Rectangle> blokken)
         {
             walk = new WalkAnimation(texture, this);
 
+          //  move = new MoveCommand();
+
             // stel een basispositie in //
-            positie = new Vector2(0, 305);
+           positie = new Vector2(0, 305);
 
             // Read input for my hero class
             this.inputReader = reader;
 
-
-            moveCommand = new MoveCommand();
+            Movecommand = new MoveCommand();
 
             // WAAR IS ONZE HERO ? RECTANGLE IS HET LAATSTE 2 height && breedte //
-            _collisionRectangle = new Rectangle((int)positie.X, (int)positie.Y, 64, 96);
+            _collisionRectangle = new Rectangle((int)positie.X, (int)positie.Y, 55, 80);
+
+            colli = new Collisionn(this, blokken);
+
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime,SoundEffect spring)
         {
+
+            int screenx = 1014;
+            int screeny = 600;
             var richting = inputReader.LeesInput();
 
-            MoveMyHero(richting);
+
+            MoveMyHero(richting,gameTime, spring);
 
             walk.Update(gameTime);
 
@@ -62,10 +75,12 @@ namespace game
             _collisionRectangle.Y = (int)positie.Y;
             CollisionRectangle = _collisionRectangle;
 
+            colli.Update(gameTime, CollisionRectangle, screenx, screeny, Movecommand, richting);
+
         }
 
 
-        private void MoveMyHero(Vector2 richting)
+        private void MoveMyHero(Vector2 richting, GameTime gameTime, SoundEffect spring)
         {
             if (richting.X == -1)
             {
@@ -83,14 +98,12 @@ namespace game
             {
                 sprite = SpriteEffects.None;
             }
-
-            moveCommand.Execute(this, richting);
+            Movecommand.Execute(gameTime, this, richting, spring);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-
          walk.Draw(spriteBatch, sprite);
-    }
+      }
     }
 }

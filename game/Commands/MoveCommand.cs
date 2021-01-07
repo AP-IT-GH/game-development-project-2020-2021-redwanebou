@@ -1,5 +1,6 @@
 ﻿using game.Interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,45 +12,44 @@ namespace game.Commands
   public class MoveCommand:IGameCommand
     {
         // DEZE CLASS IS VOOR TOETSENBORD MOVE //
-        public Vector2 snelheid;
-        public Vector2 snelheidUp;
-        bool check;
+        public Vector2 snelheid { get; set; }
+        public bool spring { get; set; }
 
-        public MoveCommand()
-        {
-            this.snelheid = new Vector2(5, 0);
-        }
-        public void Execute(ITransform transform, Vector2 richting)
+        public void Execute(GameTime gameTime, ITransform transform, Vector2 richting, SoundEffect jump)
         {
             if (richting.X == 1 || richting.X == -1)
             {
                 // hoe beweeg ik ?
-                richting *= snelheid;
+                richting *= new Vector2(5,0);
                 transform.positie += richting;
             }
-
             // Go up //
-            transform.positie += snelheidUp;
-
-            if (richting.Y == -1 && check == false)
+            transform.positie += snelheid;
+            if (richting.Y == -1 && spring == false)
             {
                 transform.positie = new Vector2(transform.positie.X, transform.positie.Y - 10f);
-                snelheidUp.Y = -5f;
-                check = true;
+
+                snelheid = new Vector2(0, -5f);
+
+                jump.Play();
+
+                spring = true;
             }
-            if (check == true)
+            if (spring == true)
             {
                 // hoe snel gaan we down //
                 float jj = 1;
-                snelheidUp.Y += 0.15f * jj;
-            }else
+
+                snelheid += new Vector2(0, 0.15f * jj);
+            }
+            else
             {
-                snelheidUp.Y = 0f;
+                snelheid = new Vector2(0, 0);
             }
 
             if (transform.positie.Y > 300)
             {
-                check = false;
+                spring = false;
             }
         }
     }
