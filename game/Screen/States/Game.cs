@@ -28,6 +28,7 @@ namespace game.Screen
         private bool lvl;
         private SoundEffect spring;
         private Texture2D bgtexture, texture,valsstrik,exit;
+        private int backgroundsize = 1798;
         public Game(Game1 game, GraphicsDevice graphics, ContentManager content,bool lvl) : base(game, graphics, content) {
             this.lvl = lvl;
             LoadContent();
@@ -53,7 +54,7 @@ namespace game.Screen
 
         public override void Update(GameTime gameTime){
             hero.Update(gameTime, spring);
-            camera.Update(hero.positie, 1798, 1798);
+            camera.Update(hero.positie, backgroundsize, backgroundsize);
             CheckTheState();
         }
 

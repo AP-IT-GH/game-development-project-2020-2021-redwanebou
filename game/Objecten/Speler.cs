@@ -29,6 +29,7 @@ namespace game
         private IGameCommand Movecommand = new MoveCommand();
         private IEntityAnimation walk;
         private Texture2D kogel;
+        private int backgroundsize = 1798;
 
         public Speler(Texture2D texture, List<Rectangle> blokken,ContentManager content)
         {
@@ -63,7 +64,7 @@ namespace game
             _collisionRectangle.Y = (int)positie.Y;
             CollisionRectangle = _collisionRectangle;
 
-            colli.Update(gameTime, CollisionRectangle, 1798, Movecommand);
+            colli.Update(gameTime, CollisionRectangle, backgroundsize, Movecommand);
 
             foreach (var sprite in kogels.ToArray())
                 sprite.Update(gameTime, kogels, walk.sprite, this);
