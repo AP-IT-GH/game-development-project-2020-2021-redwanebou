@@ -13,6 +13,7 @@ namespace game.Commands
     {
         public Vector2 snelheid { get; set; }
         public bool spring { get; set; }
+        private int grenswaarde = 1595;
 
         public void Execute(GameTime gameTime, ITransform transform, Vector2 richting, SoundEffect jump)
         {
@@ -34,15 +35,14 @@ namespace game.Commands
             if (spring)
             {
                 // hoe snel gaan we down //
-                float jj = 1;
-                snelheid += new Vector2(0, 0.15f * jj);
+                snelheid += new Vector2(0, 0.15f);
             }
             else
             {
                 snelheid = new Vector2(0, 0);
             }
 
-            if (transform.positie.Y > 1595)
+            if (transform.positie.Y > grenswaarde)
             {
                 spring = false;
             }
