@@ -84,7 +84,6 @@ namespace game
             }
         }
 
-
         public void Draw(SpriteBatch spriteBatch)
         {
          walk.Draw(spriteBatch);

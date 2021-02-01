@@ -31,7 +31,7 @@ namespace game.Commands
                 jump.Play();
                 spring = true;
             }
-            if (spring == true)
+            if (spring)
             {
                 // hoe snel gaan we down //
                 float jj = 1;

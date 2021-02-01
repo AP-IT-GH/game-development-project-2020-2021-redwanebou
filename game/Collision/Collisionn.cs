@@ -62,12 +62,11 @@ namespace game.Collision
                     }
                     trans.positie = new Vector2(blok.X + blok.Width + 2, hero.Y);
                 }
-                // ervoor zorgen dat die niet door de blok kan //
-                if (VanOnder(hero, blok) && input.LeesInput().Y == -1)
-                    moveCommand.snelheid = new Vector2(0, -2.5f);
+                // ervoor zorgen dat die niet door de blok kan van onder //
+                if (VanOnder(hero, blok))
+                    moveCommand.snelheid += new Vector2(0,+0.15f);
             }
         }
-
 
         public bool CheckCollision(Rectangle rect1, Rectangle rect2)
         {
