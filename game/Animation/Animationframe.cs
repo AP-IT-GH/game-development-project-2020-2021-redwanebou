@@ -8,7 +8,6 @@ namespace game.Animation
 {
     public class AnimationFrame
     {
-
         public Rectangle SourceRectangle { get; set; }
 
         public AnimationFrame(Rectangle rectangle)

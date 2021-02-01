@@ -11,7 +11,6 @@ namespace game.Commands
 
   public class MoveCommand:IGameCommand
     {
-        // DEZE CLASS IS VOOR TOETSENBORD MOVE //
         public Vector2 snelheid { get; set; }
         public bool spring { get; set; }
 
@@ -19,27 +18,23 @@ namespace game.Commands
         {
             if (richting.X == 1 || richting.X == -1)
             {
-                // hoe beweeg ik ?
+                // snelheid beweging //
                 richting *= new Vector2(5,0);
                 transform.positie += richting;
             }
             // Go up //
             transform.positie += snelheid;
-            if (richting.Y == -1 && spring == false)
+            if (richting.Y == -1 && !spring)
             {
                 transform.positie = new Vector2(transform.positie.X, transform.positie.Y - 10f);
-
                 snelheid = new Vector2(0, -5f);
-
                 jump.Play();
-
                 spring = true;
             }
             if (spring == true)
             {
                 // hoe snel gaan we down //
                 float jj = 1;
-
                 snelheid += new Vector2(0, 0.15f * jj);
             }
             else
@@ -47,7 +42,7 @@ namespace game.Commands
                 snelheid = new Vector2(0, 0);
             }
 
-            if (transform.positie.Y > 300)
+            if (transform.positie.Y > 1595)
             {
                 spring = false;
             }

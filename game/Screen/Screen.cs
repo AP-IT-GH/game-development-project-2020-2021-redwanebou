@@ -10,7 +10,6 @@ namespace game
     {
         public abstract void Draw(GameTime gameTime, SpriteBatch sprite);
 
-
         public abstract void Update(GameTime gameTime);
     }
 }

@@ -13,7 +13,6 @@ namespace game.Commands
 
         public Vector2 snelheid { get; set; }
         public bool spring { get; set; }
-
       
     }
 }

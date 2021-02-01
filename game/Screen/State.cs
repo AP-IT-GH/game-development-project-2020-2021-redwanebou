@@ -1,5 +1,4 @@
-﻿using game.Backgrounds;
-using LevelDesign.LevelDesign;
+﻿using LevelDesign.LevelDesign;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +10,7 @@ namespace game.Screen
 {
     public abstract class State
     {
+        /* BRONVERMELDING: https://www.youtube.com/watch?v=76Mz7ClJLoE&ab_channel=Oyyou */
         public Game1 gamee;
 
         public ContentManager content;
@@ -26,12 +26,9 @@ namespace game.Screen
             this.content = content;
         }
 
-
-
-        public abstract void Draw(GameTime gameTime, SpriteBatch sprite, Background bg1, Background bg2, Camera camera, Speler hero, Level level);
+        public abstract void Draw(GameTime gameTime, SpriteBatch sprite);
 
         public abstract void Update(GameTime gameTime);
-
 
     }
 }

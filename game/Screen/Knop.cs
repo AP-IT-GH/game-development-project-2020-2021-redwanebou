@@ -9,11 +9,12 @@ namespace game.Screen
 {
     class knop : screen
     {
-        SpriteFont FontSize;
-        MouseState muisnu;
-        MouseState muisoud;
-        bool hover;
-        Texture2D texture;
+        /* BRONVERMELDING: https://www.youtube.com/watch?v=76Mz7ClJLoE&ab_channel=Oyyou */
+        private SpriteFont FontSize;
+        private MouseState muisnu;
+        private MouseState muisoud;
+        private bool hover;
+        private Texture2D texture;
         public Vector2 pos { get; set; }
         public event EventHandler clicker;
         public Color pcolor { get; set; }
@@ -26,7 +27,6 @@ namespace game.Screen
             pcolor = Color.Black;
         }
 
-
         public Rectangle positietext
         {
             get
@@ -35,15 +35,12 @@ namespace game.Screen
             }
         }
 
-
         public override void Draw(GameTime gameTime, SpriteBatch sprite)
         {
             var color = Color.White;
 
             if (hover)
-            {
                 color = Color.Gray;
-            }
 
             sprite.Draw(texture, positietext, color);
 
@@ -51,7 +48,6 @@ namespace game.Screen
             {
                 var x = (positietext.X + (positietext.Width) / 2) - (FontSize.MeasureString(displaytext).X / 2);
                 var y = (positietext.Y + (positietext.Height / 2)) - (FontSize.MeasureString(displaytext).Y / 2);
-                // teken het spel //
                 sprite.DrawString(FontSize, displaytext, new Vector2(x, y), pcolor);
             }
         }
@@ -69,10 +65,7 @@ namespace game.Screen
             {
                 hover = true;
                 if (muisnu.LeftButton == ButtonState.Released && muisoud.LeftButton == ButtonState.Pressed)
-                {
-                    // als we erop hebben gedrukt //
                     clicker?.Invoke(this, new EventArgs());
-                }
             }
 
         }

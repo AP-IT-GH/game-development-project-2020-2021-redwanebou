@@ -8,9 +8,8 @@ namespace game.Animation
 {
     public interface IEntityAnimation
     {
-         Animatie Animatie { get; set; }
-
-         void Draw(SpriteBatch spriteBatch, SpriteEffects sprite);
+        public SpriteEffects sprite { get; set; }
+        void Draw(SpriteBatch spriteBatch);
         void Update(GameTime gameTime);
         
         

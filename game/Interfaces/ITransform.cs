@@ -5,7 +5,7 @@ using System.Text;
 
 namespace game.Interfaces
 {
-   public  interface ITransform
+   public interface ITransform
     {
         Vector2 positie { get; set; }
     }

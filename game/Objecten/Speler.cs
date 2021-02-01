@@ -13,97 +13,83 @@ using game.Animation.HeroAnimations;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Content;
 using LevelDesign.LevelDesign;
+using game.kogel;
 using Microsoft.Xna.Framework.Audio;
 
 namespace game
 {
     public class Speler : ITransform, ICollision
     {
-
-        //  private Animatie animatie;
-        // een lijn instellen //
         public Vector2 positie { get; set; }
-
         public Rectangle CollisionRectangle { get; set; }
+        public List<Kogel> kogels;
         private Rectangle _collisionRectangle;
+        private Collisionn colli;
+        private IInputReader inputReader = new Toetsenbord();
+        private IGameCommand Movecommand = new MoveCommand();
+        private IEntityAnimation walk;
+        private Texture2D kogel;
 
-        Collisionn colli;
-
-        private IInputReader inputReader;
-
-        private IGameCommand Movecommand;
-
-        public SpriteEffects sprite;
-
-        IEntityAnimation walk;
-
-
-        public Speler(Texture2D texture, IInputReader reader, List<Rectangle> blokken)
+        public Speler(Texture2D texture, List<Rectangle> blokken,ContentManager content)
         {
+            // basis pos //
+            positie = new Vector2(70, 1595);
             walk = new WalkAnimation(texture, this);
-
-          //  move = new MoveCommand();
-
-            // stel een basispositie in //
-           positie = new Vector2(0, 305);
-
             // Read input for my hero class
-            this.inputReader = reader;
-
-            Movecommand = new MoveCommand();
-
-            // WAAR IS ONZE HERO ? RECTANGLE IS HET LAATSTE 2 height && breedte //
-            _collisionRectangle = new Rectangle((int)positie.X, (int)positie.Y, 55, 80);
-
+            _collisionRectangle = new Rectangle((int)positie.X, (int)positie.Y, 66, 86);
             colli = new Collisionn(this, blokken);
+            kogels = new List<Kogel>()
+            {
+            new ShootCommand()
+            {
+            Bullet = new Bullet(),
+            },
+            };
+            InitializeContent(content);
+        }
 
+        private void InitializeContent(ContentManager content)
+        {
+            kogel = content.Load<Texture2D>("kogel");
         }
 
         public void Update(GameTime gameTime,SoundEffect spring)
-        {
-
-            int screenx = 1014;
-            int screeny = 600;
-            var richting = inputReader.LeesInput();
-
-
-            MoveMyHero(richting,gameTime, spring);
-
+         {
             walk.Update(gameTime);
+
+            Movecommand.Execute(gameTime, this, inputReader.LeesInput(), spring);
 
             _collisionRectangle.X = (int)positie.X;
             _collisionRectangle.Y = (int)positie.Y;
             CollisionRectangle = _collisionRectangle;
 
-            colli.Update(gameTime, CollisionRectangle, screenx, screeny, Movecommand, richting);
+            colli.Update(gameTime, CollisionRectangle, 1798, Movecommand);
 
+            foreach (var sprite in kogels.ToArray())
+                sprite.Update(gameTime, kogels, walk.sprite, this);
+
+            DeleteBullet();
         }
 
-
-        private void MoveMyHero(Vector2 richting, GameTime gameTime, SoundEffect spring)
+        public void DeleteBullet()
         {
-            if (richting.X == -1)
+            for (int i = 0; i < kogels.Count; i++)
             {
-                sprite = SpriteEffects.FlipHorizontally;
+                if (kogels[i].IsRemoved)
+                {
+                    kogels.RemoveAt(i);
+                    i--;
+                }
             }
-           if (richting.X == 1)
-            {
-                sprite = SpriteEffects.None;
-            }
-            if (richting.Y == -1 && richting.X == -1)
-            {
-                sprite = SpriteEffects.FlipHorizontally;
-            }
-            if (richting.Y == -1 && richting.X == 1)
-            {
-                sprite = SpriteEffects.None;
-            }
-            Movecommand.Execute(gameTime, this, richting, spring);
         }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {
-         walk.Draw(spriteBatch, sprite);
-      }
+         walk.Draw(spriteBatch);
+         foreach (var sprite in kogels)
+         if (sprite.LinearVelocity != 0)
+         sprite.Draw(spriteBatch, kogel);
+        }
     }
 }

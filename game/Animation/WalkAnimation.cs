@@ -1,5 +1,7 @@
-﻿using game.Interfaces;
+﻿using game.Input;
+using game.Interfaces;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,39 +10,45 @@ using System.Text;
 
 namespace game.Animation.HeroAnimations
 {
-    class WalkAnimation:IEntityAnimation
+    class WalkAnimation : IEntityAnimation,ITransform
     {
-        private Animatie _animatie;
+        private Animatie _animatie = new Animatie();
+        private IInputReader input = new Toetsenbord();
         private Texture2D texture;
         private ITransform transform;
+        public Vector2 positie { get; set; }
+        public SpriteEffects sprite { get; set; }
 
         public WalkAnimation(Texture2D texture, ITransform transform)
         {
             this.texture = texture;
             this.transform = transform;
-            _animatie = new Animatie();
-            for (int jj = 0; jj != 448; jj+=64)
-            {
-                _animatie.AddFrame(new AnimationFrame(new Rectangle(jj, 0, 64, 96)));
-            }
-        }
-
-        public Animatie Animatie
-        {
-            get { return _animatie; }
-            set { _animatie = value; }
-        }
-
-        public Texture2D Texture { get; set; }
-
-        public void Draw(SpriteBatch spriteBatch, SpriteEffects sprite)
-        {
-            spriteBatch.Draw(texture, transform.positie, _animatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 1f, sprite, 0);
         }
 
         public void Update(GameTime gameTime)
         {
-            _animatie.Update(gameTime);
+            ChangeDirection(gameTime);
+             _animatie.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, transform.positie, _animatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 1f, sprite, 0);
+        }
+
+        public void ChangeDirection(GameTime gameTime)
+        {
+            if (input.LeesInput().X == -1)
+                sprite = SpriteEffects.FlipHorizontally;
+
+            if (input.LeesInput().X == 1)
+                sprite = SpriteEffects.None;
+
+            if (input.LeesInput().Y == -1 && input.LeesInput().X == -1)
+                sprite = SpriteEffects.FlipHorizontally;
+
+            if (input.LeesInput().Y == -1 && input.LeesInput().X == 1)
+                sprite = SpriteEffects.None;
         }
     }
 }
