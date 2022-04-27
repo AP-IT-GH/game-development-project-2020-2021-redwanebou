@@ -51,7 +51,7 @@ namespace game
 
         private void InitializeContent(ContentManager content)
         {
-            kogel = content.Load<Texture2D>("kogel");
+            kogel = content.Load<Texture2D>("Hero/kogel");
         }
 
         public void Update(GameTime gameTime,SoundEffect spring)
